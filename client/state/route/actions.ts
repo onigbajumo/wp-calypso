@@ -1,10 +1,4 @@
 /* eslint-disable jsdoc/require-param */
-
-/**
- * External dependencies
- */
-import { Action } from 'redux';
-
 /**
  * Internal dependencies
  */
@@ -17,7 +11,7 @@ export type RouteClearAction = {
 	type: typeof ROUTE_CLEAR_LAST_NON_EDITOR;
 };
 
-export type RouteSetAction = Action< string > & {
+export type RouteSetAction = {
 	path: string;
 	query: {
 		[ key: string ]: unknown;
