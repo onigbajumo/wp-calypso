@@ -7,37 +7,27 @@ import { Reducer, AnyAction } from 'redux';
 /**
  * Internal dependencies
  */
-import { ROUTE_SET } from 'calypso/state/route/actions';
+import { ROUTE_SET } from 'calypso/state/action-types';
+import { Query, QueryState } from 'calypso/state/route/types';
 
-export type QueryType = {
-	[ key: string ]: unknown;
-	_timestamp?: number;
-};
-
-export type QueryState = {
-	initial: QueryType | false;
-	current: QueryType | false;
-	previous: QueryType | false;
-};
-
-const timestamped = ( query: QueryType ): QueryType => ( {
+const timestamped = ( query: Query ): Query => ( {
 	...query,
 	_timestamp: Date.now(),
 } );
 
-const isEqualQuery = ( state: QueryState[ keyof QueryState ], query: QueryType ) =>
+const isEqualQuery = ( state: QueryState[ keyof QueryState ], query: Query ) =>
 	isEqual( omit( state, '_timestamp' ), omit( query, '_timestamp' ) );
 
-const initialReducer = ( state: QueryState[ 'initial' ], query: QueryType ) =>
+const initialReducer = ( state: QueryState[ 'initial' ], query: Query ) =>
 	state === false ? timestamped( query ) : state;
 
-const currentReducer = ( state: QueryState[ 'current' ], query: QueryType ) =>
+const currentReducer = ( state: QueryState[ 'current' ], query: Query ) =>
 	! isEqualQuery( state, query ) ? timestamped( query ) : state;
 
-const initialState: QueryState = {
-	initial: false,
-	current: false,
-	previous: false,
+const initialState = {
+	initial: false as const,
+	current: false as const,
+	previous: false as const,
 };
 
 export const queryReducer: Reducer< QueryState, AnyAction > = ( state = initialState, action ) => {

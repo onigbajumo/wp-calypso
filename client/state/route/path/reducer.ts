@@ -6,17 +6,10 @@ import { Reducer, AnyAction } from 'redux';
 /**
  * Internal dependencies
  */
-import { ROUTE_SET } from 'calypso/state/route/actions';
+import { ROUTE_SET } from 'calypso/state/action-types';
+import { PathState } from 'calypso/state/route/types';
 
-export type PathType = string;
-
-type PathState = {
-	initial: PathType;
-	current: PathType;
-	previous: PathType;
-};
-
-const initialState: PathState = {
+const initialState = {
 	initial: '',
 	current: '',
 	previous: '',
