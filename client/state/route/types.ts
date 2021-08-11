@@ -22,6 +22,11 @@ export type PathState = {
 	previous: Path;
 };
 
+export type RouteState = {
+	path: PathState;
+	query: QueryState;
+};
+
 type RouteClearAction = {
 	type: typeof ROUTE_CLEAR_LAST_NON_EDITOR;
 };
