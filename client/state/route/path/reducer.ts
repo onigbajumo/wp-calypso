@@ -8,22 +8,21 @@ import { Reducer, AnyAction } from 'redux';
  */
 import { ROUTE_SET } from 'calypso/state/route/actions';
 
+export type PathType = string;
+
 type PathState = {
-	initial: string;
-	current: string;
-	previous: string;
+	initial: PathType;
+	current: PathType;
+	previous: PathType;
 };
 
-const initialState = {
+const initialState: PathState = {
 	initial: '',
 	current: '',
 	previous: '',
 };
 
-export const pathReducer: Reducer< PathState, AnyAction > = (
-	state = initialState,
-	action
-): PathState => {
+export const pathReducer: Reducer< PathState, AnyAction > = ( state = initialState, action ) => {
 	const { path, type } = action;
 	switch ( type ) {
 		case ROUTE_SET:

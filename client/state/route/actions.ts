@@ -3,6 +3,7 @@
  * Internal dependencies
  */
 import 'calypso/state/ui/init';
+import { QueryType } from 'calypso/state/route/query/reducer';
 
 export const ROUTE_CLEAR_LAST_NON_EDITOR = 'ROUTE_CLEAR_LAST_NON_EDITOR' as const;
 export const ROUTE_SET = 'ROUTE_SET' as const;
@@ -13,9 +14,7 @@ export type RouteClearAction = {
 
 export type RouteSetAction = {
 	path: string;
-	query: {
-		[ key: string ]: unknown;
-	};
+	query: QueryType;
 	type: typeof ROUTE_SET;
 };
 
