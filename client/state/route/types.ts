@@ -4,7 +4,7 @@
 import { ROUTE_CLEAR_LAST_NON_EDITOR, ROUTE_SET } from 'calypso/state/action-types';
 
 export type Query = {
-	[ key: string ]: unknown;
+	[ key: string ]: string | number | undefined;
 	_timestamp?: number;
 };
 
