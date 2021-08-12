@@ -19,7 +19,7 @@ import type { IAppState } from 'calypso/state/types';
 export function getCurrentRoute(
 	state: IAppState
 ): IAppState[ 'route' ][ 'path' ][ 'current' ] | null {
-	return state.route.path.current || null;
+	return state?.route?.path?.current || null;
 }
 
 export default getCurrentRoute;

@@ -20,7 +20,7 @@ import type { IAppState } from 'calypso/state/types';
 export function getCurrentQueryArguments(
 	state: IAppState
 ): IAppState[ 'route' ][ 'query' ][ 'current' ] | null {
-	return state.route.query.current || null;
+	return state?.route?.query?.current || null;
 }
 
 export default getCurrentQueryArguments;
