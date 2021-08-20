@@ -3,7 +3,10 @@ import { getTargetDeviceName } from '../../browser-helper';
 import type { PaymentDetails, RegistrarDetails } from '../../data-helper';
 import type { TargetDevice } from '../../types';
 
+export type PaymentMethods = 'Credit Card' | 'Paypal' | 'Free';
+
 const selectors = {
+<<<<<<< HEAD
 	// Modal
 	modalContinueButton: '.checkout-modal__content button:text("Continue")',
 
@@ -13,6 +16,16 @@ const selectors = {
 	// Cart item
 	cartItem: ( itemName: string ) =>
 		`[data-testid="review-order-step--visible"] .checkout-line-item >> text=${ itemName.trim() }`,
+=======
+	// General selectors
+	modalContinueButton: 'button:text("Continue")',
+	closeCheckoutButton: `[title="Close Checkout"]`,
+
+	// Cart items
+	cartItems: '.order-review-line-items > li:visible', // match all cart items
+	cartItemByName: ( itemName: string ) =>
+		`.order-review-line-items:has-text("${ itemName }"):visible`, // match cart item by name
+>>>>>>> 3147e1da7b (Rebase on trunk e63ee31c7e69bbddb4666af0b2c60da629d02d45 and make some changes:)
 	removeCartItemButton: ( itemName: string ) =>
 		`[data-testid="review-order-step--visible"] button[aria-label*="Remove ${ itemName.trim() } from cart"]`,
 
@@ -76,23 +89,57 @@ export class CartCheckoutPage {
 	}
 
 	/**
+	 * Select the payment method to be used.
+	 *
+	 * @param {PaymentMethods} method The payment method to be used.
+	 */
+	async selectPaymentMethod( method: PaymentMethods ): Promise< void > {
+		await this.page.check( `input[aria-label="${ method }"]` );
+	}
+
+	/**
 	 * Validates that an item is in the cart with the expected text. Throws if it isn't.
 	 *
 	 * @param {string} expectedCartItemName Expected text for the name of the item in the cart.
 	 * @throws If the expected cart item is not found in the timeout period.
 	 */
 	async validateCartItem( expectedCartItemName: string ): Promise< void > {
-		await this.page.waitForSelector( selectors.cartItem( expectedCartItemName ) );
+		await this.page.waitForSelector( selectors.cartItemByName( expectedCartItemName.trim() ) );
 	}
 
 	/**
 	 * Removes the specified cart item from the cart completely.
 	 *
 	 * @param {string} cartItemName Name of the item to remove from the cart.
+	 * @param param1 Keyed object parameter.
+	 * @param {boolean} param1.closeCheckout If true, method will attempt to close the checkout screen.
 	 */
-	async removeCartItem( cartItemName: string ): Promise< void > {
+	async removeCartItem(
+		cartItemName: string,
+		{ closeCheckout }: { closeCheckout?: boolean } = {}
+	): Promise< void > {
+		// Checkout page adds dynamic css classes and the same classes are
+		// shared across multiple elements on page. Limit the search to items
+		// within the order review line that are visible.
+		const cartItems = await this.page.$$( selectors.cartItems );
 		await this.page.click( selectors.removeCartItemButton( cartItemName ) );
-		await this.page.click( selectors.modalContinueButton );
+
+		// If the only item in cart is removed, the checkout is automatically dismissed,
+		// navigating user back to the Upgrades > Plans page with the Plans tab selected.
+		if ( cartItems.length === 1 ) {
+			await Promise.all( [
+				this.page.waitForNavigation(),
+				this.page.click( selectors.modalContinueButton ),
+			] );
+		} else {
+			// Otherwise confirm the removal of cart item.
+			await this.page.click( selectors.modalContinueButton );
+
+			// If checkout should be closed, perform the action now.
+			if ( closeCheckout ) {
+				await this.closeCheckout();
+			}
+		}
 	}
 
 	/**
