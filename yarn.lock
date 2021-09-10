@@ -181,6 +181,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@automattic/calypso-polyfills@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@automattic/calypso-polyfills@npm:1.0.0"
+  dependencies:
+    core-js: 3.6.3
+    isomorphic-fetch: 2.2.1
+    regenerator-runtime: 0.13.3
+    svg4everybody: 2.1.9
+  checksum: 80465f5a916c5a8c15d0275048dc2a92691a9d2f5c92b295c0c18bc862becab1c33479927b562e954c4042b24359eff42ada5b53f65cb1bcf72579d00ece461b
+  languageName: node
+  linkType: hard
+
 "@automattic/calypso-products@^1.0.0, @automattic/calypso-products@workspace:packages/calypso-products":
   version: 0.0.0-use.local
   resolution: "@automattic/calypso-products@workspace:packages/calypso-products"
@@ -448,6 +460,33 @@ __metadata:
     react-test-renderer: ^17.0.2
     tslib: ^2.3.0
     typescript: ^4.4.3
+  languageName: unknown
+  linkType: soft
+
+"@automattic/inline-help@workspace:apps/inline-help":
+  version: 0.0.0-use.local
+  resolution: "@automattic/inline-help@workspace:apps/inline-help"
+  dependencies:
+    "@automattic/calypso-build": ^9.0.0
+    "@automattic/calypso-polyfills": ^1.0.0
+    "@automattic/webpack-extensive-lodash-replacement-plugin": ^0.0.2
+    autoprefixer: ^10.2.5
+    calypso: ^0.17.0
+    enzyme: ^3.11.0
+    html-webpack-plugin: ^5.0.0-beta.4
+    jest: ^27.0.6
+    postcss: ^8.2.6
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    react-query: ^3.9.8
+    react-redux: ^7.2.4
+    redux: ^4.1.1
+    redux-thunk: ^2.3.0
+    webpack: ^5.53.0
+    webpack-bundle-analyzer: ^4.4.2
+    webpack-dev-server: ^3.11.2
+    wpcom: ^6.0.0
+    wpcom-proxy-request: ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -13714,6 +13753,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:3.6.3":
+  version: 3.6.3
+  resolution: "core-js@npm:3.6.3"
+  checksum: 7d47085f49766697188d4c41e6560fa1e4bca60eb75dea38c0cab5d0f0a870fd7e4168dffaddec27d68851c81f4417ee003e7bcd466bd607a1e9a0f746378dad
+  languageName: node
+  linkType: hard
+
 "core-js@npm:^1.0.0":
   version: 1.2.7
   resolution: "core-js@npm:1.2.7"
@@ -21854,7 +21900,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"isomorphic-fetch@npm:^2.1.1, isomorphic-fetch@npm:^2.2.1":
+"isomorphic-fetch@npm:2.2.1, isomorphic-fetch@npm:^2.1.1, isomorphic-fetch@npm:^2.2.1":
   version: 2.2.1
   resolution: "isomorphic-fetch@npm:2.2.1"
   dependencies:
@@ -32066,6 +32112,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:0.13.3":
+  version: 0.13.3
+  resolution: "regenerator-runtime@npm:0.13.3"
+  checksum: 090f036b37c1c39981dc79f3001efb3ae9fe578535e26e679f83e38d9a87cd6b273c97a42360b17d682b9a6ed0ff05e536d3c19417f7204f06edcec3acb46878
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.11.0":
   version: 0.11.1
   resolution: "regenerator-runtime@npm:0.11.1"
@@ -35765,6 +35818,13 @@ resolve@^2.0.0-next.3:
   version: 1.0.0
   resolution: "svg-tags@npm:1.0.0"
   checksum: 5867e29e8f431bf7aecf5a244d1af5725f80a1086187dbc78f26d8433b5e96b8fe9361aeb10d1699ff483b9afec785a10916b9312fe9d734d1a7afd48226c954
+  languageName: node
+  linkType: hard
+
+"svg4everybody@npm:2.1.9":
+  version: 2.1.9
+  resolution: "svg4everybody@npm:2.1.9"
+  checksum: 033ba59c4b8b3466c0abcb42bb750e255b5b245b591e5e585a6ab39baf87c19ae2269fb4921589ad94700380c46929e92a88362e180d12e7d1d1a601f27d5c2c
   languageName: node
   linkType: hard
 
