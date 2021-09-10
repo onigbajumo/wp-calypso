@@ -1,13 +1,11 @@
 import { useTranslate } from 'i18n-calypso';
-import PropTypes from 'prop-types';
 import React from 'react';
 import FormattedHeader from 'calypso/components/formatted-header';
 import InlineSupportLink from 'calypso/components/inline-support-link';
-import HeaderCart from 'calypso/my-sites/checkout/cart/header-cart';
 
 import './style.scss';
 
-function EmailHeader( { currentRoute, selectedSite } ) {
+export default function EmailHeader() {
 	const translate = useTranslate();
 
 	return (
@@ -25,19 +23,6 @@ function EmailHeader( { currentRoute, selectedSite } ) {
 				) }
 				align="left"
 			/>
-
-			{ selectedSite && (
-				<div className="email-header__cart">
-					<HeaderCart currentRoute={ currentRoute } selectedSite={ selectedSite } />
-				</div>
-			) }
 		</div>
 	);
 }
-
-EmailHeader.propTypes = {
-	currentRoute: PropTypes.string,
-	selectedSite: PropTypes.object.isRequired,
-};
-
-export default EmailHeader;
