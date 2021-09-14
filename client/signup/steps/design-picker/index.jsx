@@ -1,14 +1,19 @@
 import DesignPicker from '@automattic/design-picker';
 import classnames from 'classnames';
 import { localize } from 'i18n-calypso';
+import page from 'page';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import WebPreview from 'calypso/components/web-preview';
 import { recordTracksEvent } from 'calypso/lib/analytics/tracks';
+import { addQueryArgs } from 'calypso/lib/route';
 import StepWrapper from 'calypso/signup/step-wrapper';
+import { getStepUrl } from 'calypso/signup/utils';
 import { submitSignupStep } from 'calypso/state/signup/progress/actions';
 import { getRecommendedThemes as fetchRecommendedThemes } from 'calypso/state/themes/actions';
 import { getRecommendedThemes } from 'calypso/state/themes/selectors';
+import PreviewToolbar from './preview-toolbar';
 import './style.scss';
 
 // Ideally this data should come from the themes API, maybe by a tag that's applied to
@@ -39,9 +44,19 @@ class DesignPickerStep extends Component {
 		showOnlyThemes: false,
 	};
 
+	state = {
+		selectedDesign: null,
+	};
+
 	componentDidMount() {
 		if ( this.props.showOnlyThemes ) {
 			this.fetchThemes();
+		}
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.stepSectionName !== this.props.stepSectionName ) {
+			this.updateSelectedDesign();
 		}
 	}
 
@@ -49,7 +64,41 @@ class DesignPickerStep extends Component {
 		this.props.fetchRecommendedThemes( 'auto-loading-homepage' );
 	}
 
+	getDesigns() {
+		// TODO fetching and filtering code should be pulled to a shared place that's usable by both
+		// `/start` and `/new` onboarding flows. Or perhaps fetching should be done within the <DesignPicker>
+		// component itself. The `/new` environment needs helpers for making authenticated requests to
+		// the theme API before we can do this.
+		// taxonomies.theme_subject probably maps to category
+		return this.props.themes
+			.filter( ( { id } ) => ! EXCLUDED_THEMES.includes( id ) )
+			.map( ( { id, name } ) => ( {
+				categories: [],
+				features: [],
+				is_premium: false,
+				slug: id,
+				template: id,
+				theme: id,
+				title: name,
+				...( STATIC_PREVIEWS.includes( id ) && { preview: 'static' } ),
+			} ) );
+	}
+
+	updateSelectedDesign() {
+		const { stepSectionName } = this.props;
+
+		this.setState( {
+			selectedDesign: this.getDesigns().find( ( { theme } ) => theme === stepSectionName ),
+		} );
+	}
+
 	pickDesign = ( selectedDesign ) => {
+		page( getStepUrl( this.props.flowName, this.props.stepName, selectedDesign.theme ) );
+	};
+
+	submitDesign = () => {
+		const { selectedDesign } = this.state;
+
 		recordTracksEvent( 'calypso_signup_select_design', {
 			theme: `pub/${ selectedDesign?.theme }`,
 			template: selectedDesign?.template,
@@ -72,23 +121,7 @@ class DesignPickerStep extends Component {
 		let designs = undefined;
 
 		if ( this.props.showOnlyThemes ) {
-			// TODO fetching and filtering code should be pulled to a shared place that's usable by both
-			// `/start` and `/new` onboarding flows. Or perhaps fetching should be done within the <DesignPicker>
-			// component itself. The `/new` environment needs helpers for making authenticated requests to
-			// the theme API before we can do this.
-			// taxonomies.theme_subject probably maps to category
-			designs = this.props.themes
-				.filter( ( { id } ) => ! EXCLUDED_THEMES.includes( id ) )
-				.map( ( { id, name } ) => ( {
-					categories: [],
-					features: [],
-					is_premium: false,
-					slug: id,
-					template: id,
-					theme: id,
-					title: name,
-					...( STATIC_PREVIEWS.includes( id ) && { preview: 'static' } ),
-				} ) );
+			designs = this.getDesigns();
 		}
 
 		return (
@@ -105,6 +138,46 @@ class DesignPickerStep extends Component {
 		);
 	}
 
+	renderDesignPreview() {
+		const {
+			signupDependencies: { siteSlug },
+			translate,
+		} = this.props;
+
+		const { selectedDesign } = this.state;
+
+		const previewUrl = addQueryArgs(
+			{
+				theme: `pub/${ selectedDesign.theme }`,
+				hide_banners: true,
+				demo: true,
+				iframe: true,
+				theme_preview: true,
+			},
+			`//${ siteSlug }`
+		);
+
+		return (
+			<div className="design-picker__preview">
+				<WebPreview
+					className="design-picker__web-preview"
+					showPreview
+					isContentOnly
+					showUrl={ false }
+					showClose={ false }
+					showEdit={ false }
+					externalUrl={ siteSlug }
+					previewUrl={ previewUrl }
+					loadingMessage={ translate(
+						'{{strong}}One moment, please…{{/strong}} loading your site.',
+						{ components: { strong: <strong /> } }
+					) }
+					toolbarComponent={ PreviewToolbar }
+				/>
+			</div>
+		);
+	}
+
 	headerText() {
 		const { translate } = this.props;
 
@@ -118,11 +191,33 @@ class DesignPickerStep extends Component {
 
 	render() {
 		const { isReskinned } = this.props;
+		const { selectedDesign } = this.state;
 		const headerText = this.headerText();
 		const subHeaderText = this.subHeaderText();
 
+		if ( selectedDesign ) {
+			return (
+				<StepWrapper
+					{ ...this.props }
+					fallbackHeaderText={ selectedDesign.title }
+					headerText={ selectedDesign.title }
+					fallbackSubHeaderText={ '' }
+					subHeaderText={ '' }
+					stepContent={ this.renderDesignPreview() }
+					align={ 'center' }
+					hideSkip
+					hideNext={ false }
+					nextLabelText={ this.props.translate( 'Start with %(designTitle)s', {
+						args: { designTitle: selectedDesign.title },
+					} ) }
+					goToNextStep={ this.submitDesign }
+				/>
+			);
+		}
+
 		return (
 			<StepWrapper
+				{ ...this.props }
 				fallbackHeaderText={ headerText }
 				headerText={ headerText }
 				fallbackSubHeaderText={ subHeaderText }
@@ -130,7 +225,6 @@ class DesignPickerStep extends Component {
 				stepContent={ this.renderDesignPicker() }
 				align={ isReskinned ? 'left' : 'center' }
 				skipButtonAlign={ isReskinned ? 'top' : 'bottom' }
-				{ ...this.props }
 			/>
 		);
 	}
