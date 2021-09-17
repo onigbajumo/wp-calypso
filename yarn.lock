@@ -610,6 +610,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@automattic/masterbar-cart@workspace:apps/masterbar-cart":
+  version: 0.0.0-use.local
+  resolution: "@automattic/masterbar-cart@workspace:apps/masterbar-cart"
+  dependencies:
+    "@automattic/calypso-build": ^9.0.0
+    autoprefixer: ^10.2.5
+    calypso: ^0.17.0
+    html-webpack-plugin: ^5.0.0-beta.4
+    jest: ^27.0.6
+    postcss: ^8.2.6
+    react: ^16.12.0
+    react-dom: ^16.12.0
+    react-query: ^3.9.8
+    webpack: ^5.46.0
+    webpack-bundle-analyzer: ^4.4.2
+    webpack-dev-server: ^3.11.2
+    wpcom: ^6.0.0
+    wpcom-proxy-request: ^6.0.0
+  languageName: unknown
+  linkType: soft
+
 "@automattic/material-design-icons@^1.0.0, @automattic/material-design-icons@workspace:packages/material-design-icons":
   version: 0.0.0-use.local
   resolution: "@automattic/material-design-icons@workspace:packages/material-design-icons"
