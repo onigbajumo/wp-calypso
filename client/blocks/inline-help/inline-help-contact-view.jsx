@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { useI18n } from '@wordpress/react-i18n';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InlineHelpForumView from 'calypso/blocks/inline-help/inline-help-forum-view';
 import PlaceholderLines from 'calypso/blocks/inline-help/placeholder-lines';
@@ -25,11 +26,21 @@ function InlineHelpContactViewLoaded() {
 }
 
 export default function InlineHelpContactView() {
+	const { __ } = useI18n();
+	const headerEl = useRef();
 	const supportVariationDetermined = useSelector( isSupportVariationDetermined );
 
-	if ( ! supportVariationDetermined ) {
-		return <PlaceholderLines />;
-	}
+	// focus the header on mount
+	useEffect( () => {
+		headerEl.current.focus();
+	}, [] );
 
-	return <InlineHelpContactViewLoaded />;
+	return (
+		<section className="inline-help__secondary-view inline-help__contact">
+			<h2 ref={ headerEl } className="inline-help__title" tabIndex="-1">
+				{ __( 'Get Support' ) }
+			</h2>
+			{ supportVariationDetermined ? <InlineHelpContactViewLoaded /> : <PlaceholderLines /> }
+		</section>
+	);
 }

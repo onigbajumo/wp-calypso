@@ -20,10 +20,6 @@
 }
 
 .inline-help__search {
-	.is-secondary-view-active & {
-		display: none;
-	}
-
 	.search-card {
 		border-radius: 2px 2px 0 0;
 		margin: 0;
@@ -73,17 +69,11 @@
 }
 
 .inline-help__secondary-view {
-	display: none;
-
 	box-sizing: border-box;
 	max-height: 70vh;
 	min-height: 206px;
 	overflow-y: auto;
 	padding: 16px;
-
-	.is-secondary-view-active & {
-		display: block;
-	}
 
 	.button {
 		width: 100%;
@@ -195,22 +185,6 @@
 
 	.button.is-borderless.inline-help__contact-button {
 		padding-right: 40px;
-	}
-
-	// Hide/Show buttons as needed
-	.inline-help__cancel-button {
-		display: none;
-	}
-
-	.is-secondary-view-active & {
-		.inline-help__more-button,
-		.inline-help__contact-button {
-			display: none;
-		}
-
-		.inline-help__cancel-button {
-			display: block;
-		}
 	}
 }
 

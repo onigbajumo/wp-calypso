@@ -1,20 +1,40 @@
 import { Button, Gridicon } from '@automattic/components';
 import { withMobileBreakpoint } from '@automattic/viewport-react';
-import { __ } from '@wordpress/i18n';
-import classNames from 'classnames';
 import { localize } from 'i18n-calypso';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import InlineHelpContactView from 'calypso/blocks/inline-help/inline-help-contact-view';
+import React, { Component, Suspense } from 'react';
+import { connect, useSelector } from 'react-redux';
 import QuerySupportTypes from 'calypso/blocks/inline-help/inline-help-query-support-types';
 import { recordTracksEvent } from 'calypso/state/analytics/actions';
 import getSearchQuery from 'calypso/state/inline-help/selectors/get-search-query';
-import { VIEW_CONTACT, VIEW_RICH_RESULT } from './constants';
 import InlineHelpRichResult from './inline-help-rich-result';
 import InlineHelpSearchCard from './inline-help-search-card';
 import InlineHelpSearchResults from './inline-help-search-results';
 import './popover-content.scss';
+
+const VIEW_SEARCH = 'search';
+const VIEW_CONTACT = 'contact';
+const VIEW_RICH_RESULT = 'richresult';
+
+const InlineHelpContactView = React.lazy( () => import( './inline-help-contact-view' ) );
+
+function SearchView( { openResultView, setAdminSection } ) {
+	const searchQuery = useSelector( getSearchQuery );
+
+	return (
+		<section>
+			<QuerySupportTypes />
+			<div className="inline-help__search">
+				<InlineHelpSearchCard query={ searchQuery } />
+				<InlineHelpSearchResults
+					onSelect={ openResultView }
+					onAdminSectionSelect={ setAdminSection }
+					searchQuery={ searchQuery }
+				/>
+			</div>
+		</section>
+	);
+}
 
 class InlineHelpPopoverContent extends Component {
 	static propTypes = {
@@ -22,10 +42,8 @@ class InlineHelpPopoverContent extends Component {
 		showVideoResult: PropTypes.func.isRequired,
 	};
 
-	secondaryViewRef = React.createRef();
-
 	state = {
-		activeSecondaryView: null,
+		activeView: VIEW_SEARCH,
 		selectedResult: null,
 	};
 
@@ -33,14 +51,7 @@ class InlineHelpPopoverContent extends Component {
 		this.props.recordTracksEvent( `calypso_inlinehelp_${ secondaryViewKey }_show`, {
 			location: 'inline-help-popover',
 		} );
-		// Focus the secondary popover contents after the state is set
-		this.setState( { activeSecondaryView: secondaryViewKey }, () => {
-			const contentTitle = this.secondaryViewRef.current.querySelector( 'h2' );
-
-			if ( contentTitle ) {
-				contentTitle.focus();
-			}
-		} );
+		this.setState( { activeView: secondaryViewKey } );
 	};
 
 	closeSecondaryView = () => {
@@ -48,7 +59,7 @@ class InlineHelpPopoverContent extends Component {
 			location: 'inline-help-popover',
 		} );
 		this.setState( {
-			activeSecondaryView: null,
+			activeView: VIEW_SEARCH,
 			selectedResult: null,
 		} );
 	};
@@ -77,99 +88,77 @@ class InlineHelpPopoverContent extends Component {
 		} );
 	};
 
-	renderSecondaryView() {
-		const { onClose, showVideoResult } = this.props;
-		const { selectedResult } = this.state;
-		const classes = classNames(
-			'inline-help__secondary-view',
-			`inline-help__${ this.state.activeSecondaryView }`
-		);
-
-		return (
-			<section ref={ this.secondaryViewRef } className={ classes }>
-				{
-					{
-						[ VIEW_CONTACT ]: (
-							<>
-								<h2 className="inline-help__title" tabIndex="-1">
-									{ __( 'Get Support' ) }
-								</h2>
-								<InlineHelpContactView />
-							</>
-						),
-						[ VIEW_RICH_RESULT ]: (
-							<InlineHelpRichResult
-								result={ selectedResult }
-								showVideoResult={ showVideoResult }
-								closePopover={ onClose }
-							/>
-						),
-					}[ this.state.activeSecondaryView ]
-				}
-			</section>
-		);
-	}
-
-	renderPopoverContent() {
-		return (
-			<>
-				<QuerySupportTypes />
-				<div className="inline-help__search">
-					<InlineHelpSearchCard
-						query={ this.props.searchQuery }
-						isVisible={ ! this.state.activeSecondaryView }
+	renderView() {
+		switch ( this.state.activeView ) {
+			case VIEW_SEARCH:
+				return (
+					<SearchView
+						openResultView={ this.openResultView }
+						setAdminSection={ this.setAdminSection }
 					/>
-					<InlineHelpSearchResults
-						onSelect={ this.openResultView }
-						onAdminSectionSelect={ this.setAdminSection }
-						searchQuery={ this.props.searchQuery }
+				);
+
+			case VIEW_CONTACT:
+				return (
+					<Suspense fallback={ null }>
+						<InlineHelpContactView />
+					</Suspense>
+				);
+
+			case VIEW_RICH_RESULT:
+				return (
+					<InlineHelpRichResult
+						result={ this.state.selectedResult }
+						closePopover={ this.props.onClose }
+						showVideoResult={ this.props.showVideoResult }
 					/>
-				</div>
-				{ this.renderSecondaryView() }
-			</>
-		);
+				);
+		}
 	}
 
 	renderPopoverFooter() {
 		const { translate } = this.props;
 		return (
 			<div className="inline-help__footer">
-				<Button
-					onClick={ this.moreHelpClicked }
-					className="inline-help__more-button"
-					borderless
-					href="/help"
-				>
-					<Gridicon icon="help" className="inline-help__gridicon-left" />
-					{ translate( 'More help' ) }
-				</Button>
-
-				<Button onClick={ this.openContactView } className="inline-help__contact-button" borderless>
-					<Gridicon icon="chat" className="inline-help__gridicon-left" />
-					{ translate( 'Contact us' ) }
-					<Gridicon icon="chevron-right" className="inline-help__gridicon-right" />
-				</Button>
-
-				<Button
-					onClick={ this.closeSecondaryView }
-					className="inline-help__cancel-button"
-					borderless
-				>
-					<Gridicon icon="chevron-left" className="inline-help__gridicon-left" />
-					{ translate( 'Back' ) }
-				</Button>
+				{ this.state.activeView === VIEW_SEARCH ? (
+					<>
+						<Button
+							onClick={ this.moreHelpClicked }
+							className="inline-help__more-button"
+							borderless
+							href="/help"
+						>
+							<Gridicon icon="help" className="inline-help__gridicon-left" />
+							{ translate( 'More help' ) }
+						</Button>
+						<Button
+							onClick={ this.openContactView }
+							className="inline-help__contact-button"
+							borderless
+						>
+							<Gridicon icon="chat" className="inline-help__gridicon-left" />
+							{ translate( 'Contact us' ) }
+							<Gridicon icon="chevron-right" className="inline-help__gridicon-right" />
+						</Button>
+					</>
+				) : (
+					<Button
+						onClick={ this.closeSecondaryView }
+						className="inline-help__cancel-button"
+						borderless
+					>
+						<Gridicon icon="chevron-left" className="inline-help__gridicon-left" />
+						{ translate( 'Back' ) }
+					</Button>
+				) }
 			</div>
 		);
 	}
 
 	render() {
-		const className = classNames( 'inline-help__popover-content', {
-			'is-secondary-view-active': this.state.activeSecondaryView,
-		} );
-
 		return (
-			<div className={ className }>
-				{ this.renderPopoverContent() }
+			<div className="inline-help__popover-content">
+				{ this.renderView() }
 				{ this.renderPopoverFooter() }
 			</div>
 		);
@@ -177,12 +166,5 @@ class InlineHelpPopoverContent extends Component {
 }
 
 export default withMobileBreakpoint(
-	connect(
-		( state ) => ( {
-			searchQuery: getSearchQuery( state ),
-		} ),
-		{
-			recordTracksEvent,
-		}
-	)( localize( InlineHelpPopoverContent ) )
+	connect( null, { recordTracksEvent } )( localize( InlineHelpPopoverContent ) )
 );
