@@ -100,7 +100,7 @@ DomainTransferOrConnect.propTypes = {
 	isSignupStep: PropTypes.bool,
 	onConnect: PropTypes.func,
 	onTransfer: PropTypes.func,
-	selectedSite: PropTypes.object.isRequired,
+	selectedSite: PropTypes.object,
 	transferDomainUrl: PropTypes.string,
 };
 

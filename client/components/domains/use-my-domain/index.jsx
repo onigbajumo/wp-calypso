@@ -34,6 +34,7 @@ function UseMyDomain( {
 	onConnect,
 	onTransfer,
 	selectedSite,
+	showHeader,
 	transferDomainUrl,
 } ) {
 	const inputMode = useMemo(
@@ -111,7 +112,7 @@ function UseMyDomain( {
 
 		wpcom
 			.domain( domainName )
-			.isAvailable( { apiVersion: '1.3', blog_id: selectedSite.ID, is_cart_pre_check: false } )
+			.isAvailable( { apiVersion: '1.3', blog_id: selectedSite?.ID, is_cart_pre_check: false } )
 			.then( ( availabilityData ) => {
 				const availabilityErrorMessage = getAvailabilityErrorMessage( {
 					availabilityData,
@@ -187,6 +188,10 @@ function UseMyDomain( {
 		setMode( inputMode.transferDomain );
 	};
 
+	const handleTransfer = () => {
+		onTransfer( domainName );
+	};
+
 	const renderDomainInput = () => {
 		return (
 			<UseMyDomainInput
@@ -214,7 +219,7 @@ function UseMyDomain( {
 						: onConnect
 				}
 				onTransfer={
-					config.isEnabled( 'domains/new-transfer-flow' ) ? showTransferDomainFlow : onTransfer
+					config.isEnabled( 'domains/new-transfer-flow' ) ? showTransferDomainFlow : handleTransfer
 				}
 				transferDomainUrl={ transferDomainUrl }
 			/>
@@ -263,28 +268,45 @@ function UseMyDomain( {
 		}
 	};
 
-	const headerText =
-		mode === inputMode.domainInput
-			? __( 'Use a domain I own' )
-			: /* translators: %s - the name of the domain the user will add to their site */
-			  sprintf( __( 'Use a domain I own: %s' ), domainName );
+	const renderHeader = () => {
+		if ( ! showHeader ) {
+			return null;
+		}
+
+		const headerText =
+			mode === inputMode.domainInput
+				? __( 'Use a domain I own' )
+				: /* translators: %s - the name of the domain the user will add to their site */
+				  sprintf( __( 'Use a domain I own: %s' ), domainName );
+
+		return (
+			<>
+				<BackButton className={ baseClassName + '__go-back' } onClick={ onGoBack }>
+					<Gridicon icon="arrow-left" size={ 18 } />
+					{ __( 'Back' ) }
+				</BackButton>
+				<FormattedHeader
+					brandFont
+					className={ baseClassName + '__page-heading' }
+					headerText={ headerText }
+					align="left"
+				/>
+			</>
+		);
+	};
 
 	return (
 		<>
-			<BackButton className={ baseClassName + '__go-back' } onClick={ onGoBack }>
-				<Gridicon icon="arrow-left" size={ 18 } />
-				{ __( 'Back' ) }
-			</BackButton>
-			<FormattedHeader
-				brandFont
-				className={ baseClassName + '__page-heading' }
-				headerText={ headerText }
-				align="left"
-			/>
+			{ renderHeader() }
 			{ renderContent() }
 		</>
 	);
 }
+
+UseMyDomain.defaultProps = {
+	isSignupStep: false,
+	showHeader: true,
+};
 
 UseMyDomain.propTypes = {
 	goBack: PropTypes.func.isRequired,
@@ -293,6 +315,7 @@ UseMyDomain.propTypes = {
 	onConnect: PropTypes.func,
 	onTransfer: PropTypes.func,
 	selectedSite: PropTypes.object,
+	showHeader: PropTypes.bool,
 	transferDomainUrl: PropTypes.string,
 };
 
