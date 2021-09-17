@@ -93,12 +93,14 @@ class DesignPickerStep extends Component {
 	}
 
 	pickDesign = ( selectedDesign ) => {
+		this.submitDesign( selectedDesign );
+	};
+
+	previewDesign = ( selectedDesign ) => {
 		page( getStepUrl( this.props.flowName, this.props.stepName, selectedDesign.theme ) );
 	};
 
-	submitDesign = () => {
-		const { selectedDesign } = this.state;
-
+	submitDesign = ( selectedDesign = this.state.selectedDesign ) => {
 		recordTracksEvent( 'calypso_signup_select_design', {
 			theme: `pub/${ selectedDesign?.theme }`,
 			template: selectedDesign?.template,
@@ -130,6 +132,7 @@ class DesignPickerStep extends Component {
 				theme={ this.props.isReskinned ? 'light' : 'dark' }
 				locale={ this.props.locale } // props.locale obtained via `localize` HoC
 				onSelect={ this.pickDesign }
+				onPreview={ this.previewDesign }
 				className={ classnames( {
 					'design-picker-step__is-large-thumbnails': this.props.largeThumbnails,
 				} ) }
