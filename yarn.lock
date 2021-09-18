@@ -617,6 +617,7 @@ __metadata:
     "@automattic/calypso-build": ^9.0.0
     autoprefixer: ^10.2.5
     calypso: ^0.17.0
+    enzyme: ^3.11.0
     html-webpack-plugin: ^5.0.0-beta.4
     jest: ^27.0.6
     postcss: ^8.2.6
@@ -628,6 +629,7 @@ __metadata:
     webpack-dev-server: ^3.11.2
     wpcom: ^6.0.0
     wpcom-proxy-request: ^6.0.0
+    wpcom-xhr-request: ^1.2.0
   languageName: unknown
   linkType: soft
 
