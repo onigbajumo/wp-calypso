@@ -29,6 +29,7 @@ import './style.scss';
 
 function UseMyDomain( {
 	goBack,
+	initialInputMode,
 	initialQuery,
 	isSignupStep,
 	onConnect,
@@ -56,14 +57,14 @@ function UseMyDomain( {
 		transferLockedDomainStepsDefinition
 	);
 	const [ isFetchingAvailability, setIsFetchingAvailability ] = useState( false );
-	const [ mode, setMode ] = useState( inputMode.domainInput );
+	const [ mode, setMode ] = useState( initialInputMode );
 	const [ ownershipVerificationFlowPageSlug, setOwnershipVerificationFlowPageSlug ] = useState(
 		stepSlug.OWNERSHIP_VERIFICATION_LOGIN
 	);
 	const [ transferDomainFlowPageSlug, setTransferDomainFlowPageSlug ] = useState(
 		stepSlug.TRANSFER_START
 	);
-	const initialValidation = useRef( null );
+	const initialValidation = useRef( isSignupStep );
 
 	const baseClassName = 'use-my-domain';
 
@@ -304,13 +305,16 @@ function UseMyDomain( {
 }
 
 UseMyDomain.defaultProps = {
+	goBack: () => {},
+	initialInputMode: UseMyDomain.inputMode.domainInput,
 	isSignupStep: false,
 	showHeader: true,
 };
 
 UseMyDomain.propTypes = {
-	goBack: PropTypes.func.isRequired,
+	goBack: PropTypes.func,
 	initialQuery: PropTypes.string,
+	initialInputMode: PropTypes.string,
 	isSignupStep: PropTypes.bool,
 	onConnect: PropTypes.func,
 	onTransfer: PropTypes.func,
