@@ -49,6 +49,7 @@ class DesignPickerStep extends Component {
 
 	state = {
 		selectedDesign: null,
+		scrollTop: 0,
 	};
 
 	componentDidMount() {
@@ -60,6 +61,19 @@ class DesignPickerStep extends Component {
 	componentDidUpdate( prevProps ) {
 		if ( prevProps.stepSectionName !== this.props.stepSectionName ) {
 			this.updateSelectedDesign();
+			this.updateScrollPosition();
+		}
+	}
+
+	updateScrollPosition() {
+		if ( this.props.stepSectionName ) {
+			this.setState( { scrollTop: document.scrollingElement.scrollTop } );
+			document.scrollingElement.scrollTop = 0;
+		} else {
+			// Defer restore scroll position to ensure DesignPicker is rendered
+			window.setTimeout( () => {
+				document.scrollingElement.scrollTop = this.state.scrollTop;
+			} );
 		}
 	}
 
