@@ -44,7 +44,7 @@ describe(
 		describe( 'Signup', function () {
 			it( 'Navigate to Signup page', async function () {
 				const loginPage = new LoginPage( page );
-				await loginPage.clickSignup();
+				await loginPage.signup();
 			} );
 
 			it( 'Sign up as new user', async function () {
