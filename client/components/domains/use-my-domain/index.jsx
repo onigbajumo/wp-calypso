@@ -39,14 +39,12 @@ function UseMyDomain( props ) {
 	);
 
 	const {
-		goBack = () => {},
-		initialInputMode = inputMode.domainInput,
+		goBack,
 		initialQuery,
 		isSignupStep = false,
 		onConnect,
 		onTransfer,
 		selectedSite,
-		showHeader = true,
 		transferDomainUrl,
 	} = props;
 
@@ -59,7 +57,7 @@ function UseMyDomain( props ) {
 		transferLockedDomainStepsDefinition
 	);
 	const [ isFetchingAvailability, setIsFetchingAvailability ] = useState( false );
-	const [ mode, setMode ] = useState( initialInputMode );
+	const [ mode, setMode ] = useState( inputMode.domainInput );
 	const [ ownershipVerificationFlowPageSlug, setOwnershipVerificationFlowPageSlug ] = useState(
 		stepSlug.OWNERSHIP_VERIFICATION_LOGIN
 	);
@@ -211,6 +209,8 @@ function UseMyDomain( props ) {
 	};
 
 	const renderTransferOrConnect = () => {
+		const transferHandler = onTransfer && handleTransfer;
+
 		return (
 			<DomainTransferOrConnect
 				availability={ domainAvailabilityData }
@@ -222,7 +222,7 @@ function UseMyDomain( props ) {
 						: onConnect
 				}
 				onTransfer={
-					config.isEnabled( 'domains/new-transfer-flow' ) ? showTransferDomainFlow : handleTransfer
+					config.isEnabled( 'domains/new-transfer-flow' ) ? showTransferDomainFlow : transferHandler
 				}
 				transferDomainUrl={ transferDomainUrl }
 			/>
@@ -272,10 +272,6 @@ function UseMyDomain( props ) {
 	};
 
 	const renderHeader = () => {
-		if ( ! showHeader ) {
-			return null;
-		}
-
 		const headerText =
 			mode === inputMode.domainInput
 				? __( 'Use a domain I own' )
@@ -284,10 +280,12 @@ function UseMyDomain( props ) {
 
 		return (
 			<>
-				<BackButton className={ baseClassName + '__go-back' } onClick={ onGoBack }>
-					<Gridicon icon="arrow-left" size={ 18 } />
-					{ __( 'Back' ) }
-				</BackButton>
+				{ goBack && (
+					<BackButton className={ baseClassName + '__go-back' } onClick={ onGoBack }>
+						<Gridicon icon="arrow-left" size={ 18 } />
+						{ __( 'Back' ) }
+					</BackButton>
+				) }
 				<FormattedHeader
 					brandFont
 					className={ baseClassName + '__page-heading' }
@@ -309,12 +307,10 @@ function UseMyDomain( props ) {
 UseMyDomain.propTypes = {
 	goBack: PropTypes.func,
 	initialQuery: PropTypes.string,
-	initialInputMode: PropTypes.string,
 	isSignupStep: PropTypes.bool,
 	onConnect: PropTypes.func,
 	onTransfer: PropTypes.func,
 	selectedSite: PropTypes.object,
-	showHeader: PropTypes.bool,
 	transferDomainUrl: PropTypes.string,
 };
 
