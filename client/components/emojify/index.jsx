@@ -17,10 +17,7 @@ export default class Emojify extends PureComponent {
 		tagName: 'div',
 	};
 
-	constructor( props ) {
-		super( props );
-		this.setRef = this.setRef.bind( this );
-	}
+	emojified = React.createRef();
 
 	componentDidMount() {
 		this.parseEmoji();
@@ -30,14 +27,10 @@ export default class Emojify extends PureComponent {
 		this.parseEmoji();
 	}
 
-	setRef( component ) {
-		this.emojified = component;
-	}
-
 	parseEmoji = () => {
 		const { imgClassName, twemojiUrl } = this.props;
 
-		twemoji.parse( this.emojified, {
+		twemoji.parse( this.emojified.current, {
 			base: twemojiUrl,
 			size: '72x72',
 			className: imgClassName,
@@ -67,7 +60,7 @@ export default class Emojify extends PureComponent {
 		const classes = classNames( className, 'emojify' );
 
 		return (
-			<WrapperTagName className={ classes } ref={ this.setRef } { ...other }>
+			<WrapperTagName className={ classes } ref={ this.emojified } { ...other }>
 				{ children }
 			</WrapperTagName>
 		);
