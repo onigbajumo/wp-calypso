@@ -114,6 +114,8 @@ export class PeoplePage {
 	 */
 	async selectInvitedUser( emailAddress: string ): Promise< void > {
 		await this.waitUntilLoaded();
+		const elementHandle = await this.page.waitForSelector( selectors.invitedUser( emailAddress ) );
+		await elementHandle.waitForElementState( 'stable' );
 
 		await Promise.all( [
 			this.page.waitForNavigation(),
