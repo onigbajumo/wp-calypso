@@ -62,6 +62,7 @@ function LaunchWpcomWelcomeTour() {
 
 function WelcomeTourFrame() {
 	const tourContainerRef = useRef( null );
+	const tourStartFocusedRef = useRef( null );
 	const { setShowWelcomeGuide } = useDispatch( 'automattic/wpcom-welcome-guide' );
 	const [ isMinimized, setIsMinimized ] = useState( false );
 	const [ currentCardIndex, setCurrentCardIndex ] = useState( 0 );
@@ -109,6 +110,11 @@ function WelcomeTourFrame() {
 		} );
 	};
 
+	useEffect( () => {
+		// focus the Next/Begin button as the first interactive element when tour loads
+		setTimeout( () => tourStartFocusedRef.current?.focus() );
+	}, [] );
+
 	// Preload card images
 	cardContent.forEach( ( card ) => ( new window.Image().src = card.imgSrc ) );
 
@@ -138,6 +144,7 @@ function WelcomeTourFrame() {
 							onNextCardProgression={ handleNextCardProgression }
 							onPreviousCardProgression={ handlePreviousCardProgression }
 							isGutenboarding={ isGutenboarding }
+							tourStartFocusedRef={ tourStartFocusedRef }
 						/>
 					</>
 				) : (
