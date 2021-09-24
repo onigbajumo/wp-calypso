@@ -1,8 +1,13 @@
+/**
+ * @group calypso-release
+ */
+
 import {
 	DataHelper,
+	BrowserManager,
 	LoginFlow,
-	SidebarComponent,
 	DomainsPage,
+	SidebarComponent,
 	DomainSearchComponent,
 	setupHooks,
 	CartCheckoutPage,
@@ -19,8 +24,8 @@ describe( DataHelper.createSuiteTitle( 'Domains: Add to current site' ), functio
 	// Todo: add row for Atomic tests when once #54987 is merged to trunk.
 	// ${ 'Atomic' } | ${ 'wooCommerceUser' } | ${'Free'}
 	describe.each`
-		siteType      | user               | paymentMethod
-		${ 'Simple' } | ${ 'defaultUser' } | ${ 'Credit Card' }
+		siteType      | user                         | paymentMethod
+		${ 'Simple' } | ${ 'calypsoPreReleaseUser' } | ${ 'Credit Card' }
 	`( 'Domains: Add to current site ($siteType)', function ( { user, paymentMethod } ) {
 		const phrase = DataHelper.getRandomPhrase();
 
@@ -34,14 +39,18 @@ describe( DataHelper.createSuiteTitle( 'Domains: Add to current site' ), functio
 			await loginFlow.logIn();
 		} );
 
+		it( 'Set store cookie', async function () {
+			await BrowserManager.setStoreCookie( page, { currency: 'GBP' } );
+		} );
+
 		it( 'Navigate to Upgrades > Domains', async function () {
 			sidebarComponent = new SidebarComponent( page );
 			await sidebarComponent.navigate( 'Upgrades', 'Domains' );
 		} );
 
-		it( 'Click on add domain to this site', async function () {
+		it( 'Add domain to site', async function () {
 			const domainsPage = new DomainsPage( page );
-			await domainsPage.addDomaintoSite();
+			await domainsPage.addDomain();
 		} );
 
 		it( 'Search for a domain name', async function () {
@@ -49,21 +58,19 @@ describe( DataHelper.createSuiteTitle( 'Domains: Add to current site' ), functio
 			await domainSearchComponent.search( phrase );
 		} );
 
-		it( 'Choose the .com TLD', async function () {
-			selectedDomain = await domainSearchComponent.selectDomain( '.com' );
+		it( 'Choose the .live TLD', async function () {
+			selectedDomain = await domainSearchComponent.selectDomain( '.live' );
 		} );
 
-		it( 'Decline G Suite upsell', async function () {
-			await domainSearchComponent.clickButton( 'Skip for now' );
+		it( 'Decline Titan Email upsell', async function () {
+			await domainSearchComponent.clickButton( 'Skip' );
 		} );
 
 		it( 'See secure payment', async function () {
 			cartCheckoutPage = new CartCheckoutPage( page );
-			await cartCheckoutPage.selectPaymentMethod( paymentMethod );
+			await cartCheckoutPage.validateCartItem( selectedDomain );
 		} );
 
-		it( 'Remove domain cart item then close checkout', async function () {
-			await cartCheckoutPage.removeCartItem( selectedDomain, { closeCheckout: true } );
-		} );
+		it( 'Enter domain registrar details', async function () {} );
 	} );
 } );

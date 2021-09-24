@@ -1,9 +1,7 @@
 import { Page } from 'playwright';
 
-export type AddDomainTarget = 'this site' | 'new site' | 'different site' | 'without a site';
-
 const selectors = {
-	searchDomainButton: `:text-matches(".earch for a domain")`,
+	searchForDomainButton: `a:text-matches("*earch for a domain", "i")`,
 };
 
 /**
@@ -22,12 +20,12 @@ export class DomainsPage {
 	}
 
 	/**
-	 * Clicks on the button to search for a domain to add to the current site.
+	 * Clicks on the button to add a domain to the site.
 	 */
-	async addDomaintoSite(): Promise< void > {
+	async addDomain(): Promise< void > {
 		await Promise.all( [
 			this.page.waitForNavigation(),
-			this.page.click( selectors.searchDomainButton ),
+			this.page.click( selectors.searchForDomainButton ),
 		] );
 	}
 }
