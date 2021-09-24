@@ -18,6 +18,7 @@ import { recordTracksEvent } from 'calypso/state/analytics/actions';
 import { getCurrentUserCurrencyCode } from 'calypso/state/currency-code/selectors';
 import { getPlan, getPlanBySlug, getPlanRawPrice } from 'calypso/state/plans/selectors';
 import './tabbed-plans-style.scss';
+import { useUpdateEffect } from 'calypso/../packages/search/src/utils';
 
 function SharedFeatures( {
 	className = '',
@@ -57,13 +58,13 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 	const featureComparisonData = getFeatureComparisonData();
 	const sharedFeatures = getSharedFeatures();
 	const bestForStrings = getBestForStrings();
+	const planOrder = getPlanOrder();
 
-	const [ featureComparison, setFeatureComparison ] = useState(
-		featureComparisonData.Professional
-	);
-	const [ planDetails, setPlanDetails ] = useState();
 	const [ selectedTab, setSelectedTab ] = useState( tabList[ 1 ] );
 	const [ termLength, setTermLength ] = useState( 'annually' );
+	const [ displayedPlans, setDisplayedPlans ] = useState( planOrder[ selectedTab ] );
+	const [ plansLoaded, setPlansLoaded ] = useState( false );
+	const [ planDetails, setPlanDetails ] = useState();
 	const [ showFeatures, setShowFeatures ] = useState( false );
 	const [ primaryButton, setPrimaryButton ] = useState( 'Premium' );
 	const dispatch = useDispatch();
@@ -96,21 +97,8 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 	};
 
 	useEffect( () => {
-		const planFilter =
-			selectedTab === 'Professional'
-				? [ 'Premium', 'Business', 'eCommerce' ]
-				: [ 'Free', 'Personal' ];
-
-		const displayedPlans = planProperties
-			.filter( ( plan ) => planFilter.includes( plan.planName ) )
-			.filter( ( plan ) => plan.termLength === termLength || plan.termLength === null );
-
-		setFeatureComparison( featureComparisonData[ selectedTab ] );
-		setPlanDetails( displayedPlans );
-	}, [ selectedTab, planProperties, termLength ] );
-
-	useEffect( () => {
 		selectedTab === tabList[ 0 ] ? setPrimaryButton( 'Personal' ) : setPrimaryButton( 'Business' );
+		setDisplayedPlans( planOrder[ selectedTab ] );
 		dispatch(
 			recordTracksEvent( 'calypso_signup_plans_page_clicks', {
 				tab: selectedTab,
@@ -129,6 +117,18 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 			} )
 		);
 	}, [ termLength ] );
+
+	useEffect( () => {
+		setPlansLoaded( false );
+		const filteredPlans = displayedPlans.map( ( plan ) => {
+			return planProperties.filter( ( obj ) => {
+				return obj.planName === plan && obj.termLength === termLength;
+			} )[ 0 ];
+		} );
+		console.log( `Filtered plans: ${ JSON.stringify( filteredPlans ) }` );
+		setPlanDetails( filteredPlans );
+		setPlansLoaded( true );
+	}, [] );
 
 	return (
 		<>
@@ -195,34 +195,34 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 					</>
 				) }
 
-				{ planDetails &&
-					planDetails.map( ( item, index ) => (
+				{ plansLoaded &&
+					planDetails.map( ( plan, index ) => (
 						<React.Fragment key={ `planDetails${ index }` }>
 							<PlanHeader
 								key={ `planHeader${ index }` }
 								className={ `tabbed-plans__header-${ index + 1 }` }
 							>
-								{ item.planName }
-								{ item.planName === 'Personal' && <span>Best to start</span> }
-								{ item.planName === 'Business' && <span>Best Value</span> }
-								<p>{ bestForStrings[ item.planName ] }</p>
+								{ plan.planName }
+								{ plan.planName === 'Personal' && <span>Best to start</span> }
+								{ plan.planName === 'Business' && <span>Best Value</span> }
+								<p>{ bestForStrings[ plan.planName ] }</p>
 							</PlanHeader>
 							<PlanPrice
 								key={ `planPrice${ index }` }
 								className={ `tabbed-plans__price-${ index + 1 }` }
 							>
-								{ formatCurrency( item.rawPrice, currencyCode, { stripZeros: true } ) }
+								{ formatCurrency( plan.rawPrice, currencyCode, { stripZeros: true } ) }
 							</PlanPrice>
 							<TermDescription className={ `tabbed-plans__term-desc-${ index + 1 }` }>
-								{ item.planName === 'Free' && <span>Limited features</span> }
-								{ item.termLength === 'annually' && (
+								{ plan.planName === 'Free' && <span>Limited features</span> }
+								{ plan.termLength === 'annually' && (
 									<>
 										<span>per month, billed annually</span>
 										<Savings>
 											{ "You're saving " +
 												Math.round(
-													( ( item.rawPriceForMonthly - item.rawPrice ) /
-														item.rawPriceForMonthly ) *
+													( ( plan.rawPriceForMonthly - plan.rawPrice ) /
+														plan.rawPriceForMonthly ) *
 														100
 												) +
 												'% by paying annually' }
@@ -231,23 +231,23 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 								) }
 								{ termLength === 'monthly' && <span>per month, billed monthly</span> }
 							</TermDescription>
-							{ item.planName !== 'Free' && (
+							{ plan.planName !== 'Free' && (
 								<CtaButton
 									key={ `planCtaTop${ index }` }
 									className={ `tabbed-plans__top-button-${ index + 1 }` }
-									onClick={ () => handleUpgradeButtonClick( item.planSlug, item.planProductId ) }
-									primary={ item.planName === primaryButton }
+									onClick={ () => handleUpgradeButtonClick( plan.planSlug, plan.planProductId ) }
+									primary={ plan.planName === primaryButton }
 								>
-									{ `Start with ${ item.planName }` }
+									{ `Start with ${ plan.planName }` }
 								</CtaButton>
 							) }
 							<CtaButton
 								key={ `planCta${ index }` }
 								className={ `tabbed-plans__button-${ index + 1 }` }
-								onClick={ () => handleUpgradeButtonClick( item.planSlug, item.planProductId ) }
-								primary={ item.planName === primaryButton }
+								onClick={ () => handleUpgradeButtonClick( plan.planSlug, plan.planProductId ) }
+								primary={ plan.planName === primaryButton }
 							>
-								{ `Start with ${ item.planName }` }
+								{ `Start with ${ plan.planName }` }
 							</CtaButton>
 							<SharedFeatures
 								selectedTab={ selectedTab }
@@ -261,86 +261,6 @@ function TabbedPlans( { currencyCode, onUpgradeClick, planProperties } ) {
 							/>
 						</React.Fragment>
 					) ) }
-
-				{ featureComparison.map( ( item, index, arr ) => (
-					<React.Fragment key={ `feature${ index }` }>
-						<FeatureTitle
-							key={ `featureTitle${ index }` }
-							className={ `tabbed-plans__feature-title-${ index + 1 }` }
-							isLast={ arr.length === index + 1 }
-						>
-							{ item.featureName }
-							<InfoPopover
-								className="tabbed-plans__feature-tip-info"
-								position="right"
-								icon="info"
-								iconSize={ 15 }
-							>
-								{ item.tooltip }
-							</InfoPopover>
-						</FeatureTitle>
-						{ item.planOne && (
-							<>
-								<Feature
-									key={ `featureItemOne${ index }` }
-									className={ `tabbed-plans__feature-1-${ index + 1 }` }
-									included={ item.planOne[ termLength ].included }
-									isLast={ arr.length === index + 1 }
-								>
-									<span>{ item.planOne[ termLength ].copy }</span>
-									{ item.planOne[ termLength ].mobileCopy && (
-										<span>{ item.planOne[ termLength ].mobileCopy }</span>
-									) }
-								</Feature>
-							</>
-						) }
-						{ item.planTwo && (
-							<Feature
-								key={ `featureItemTwo${ index }` }
-								className={ `tabbed-plans__feature-2-${ index + 1 }` }
-								included={ item.planTwo[ termLength ].included }
-								isLast={ arr.length === index + 1 }
-							>
-								<span>{ item.planTwo[ termLength ].copy }</span>
-								{ item.planTwo[ termLength ].mobileCopy && (
-									<span>{ item.planTwo[ termLength ].mobileCopy }</span>
-								) }
-							</Feature>
-						) }
-						{ item.planThree && (
-							<Feature
-								key={ `featureItemThree${ index }` }
-								className={ `tabbed-plans__feature-3-${ index + 1 }` }
-								included={ item.planThree[ termLength ].included }
-								isLast={ arr.length === index + 1 }
-							>
-								<span>{ item.planThree[ termLength ].copy }</span>
-								{ item.planThree[ termLength ].mobileCopy && (
-									<span>{ item.planThree[ termLength ].mobileCopy }</span>
-								) }
-							</Feature>
-						) }
-					</React.Fragment>
-				) ) }
-				<FreeBanner>
-					{ selectedTab === 'Professional' && (
-						<>
-							Need something simple to start?{ ' ' }
-							<button href="#" onClick={ () => toggleTab() }>
-								Explore our Starter plans
-							</button>
-						</>
-					) }
-					{ selectedTab === 'Starter' && (
-						<>
-							Need eCommerce or professional features?{ ' ' }
-							<button href="#" onClick={ () => toggleTab() }>
-								Explore our Professional plans
-							</button>
-						</>
-					) }
-				</FreeBanner>
-				<SharedFeatures selectedTab={ selectedTab } sharedFeatures={ sharedFeatures } />
 			</Grid>
 		</>
 	);
@@ -397,7 +317,18 @@ const mapStateToProps = ( state, ownProps ) => {
 		planSlug: 'free_plan',
 		rawPrice: 0,
 		rawPriceForMonthly: 0,
-		termLength: null,
+		termLength: 'monthly',
+	} );
+	planProperties.unshift( {
+		annualPricePerMonth: 0,
+		currencyCode: getCurrentUserCurrencyCode( state ),
+		planName: 'Free',
+		planObject: {},
+		planProductId: 1,
+		planSlug: 'free_plan',
+		rawPrice: 0,
+		rawPriceForMonthly: 0,
+		termLength: 'yearly',
 	} );
 	return {
 		planProperties,
@@ -408,6 +339,13 @@ export default connect( mapStateToProps )( TabbedPlans );
 
 function getTabList() {
 	return [ 'Starter', 'Professional' ];
+}
+
+function getPlanOrder() {
+	return {
+		Starter: [ 'Free', 'Personal' ],
+		Professional: [ 'Premium', 'Business', 'eCommerce' ],
+	};
 }
 
 function getBestForStrings() {
