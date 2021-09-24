@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentUserCurrencyCode } from 'calypso/state/currency-code/selectors';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'calypso/state/ui/selectors';
@@ -6,6 +6,7 @@ import { getPurchaseURLCallback } from '../get-purchase-url-callback';
 import ProductCard from '../product-card';
 import { Duration, QueryArgs, SelectorProduct } from '../types';
 import { useGetTieredProducts } from '../use-get-tiered-products';
+import withDifferentiators from './with-differentiators';
 
 import './style.scss';
 
@@ -24,7 +25,11 @@ export const StorageTierUpgrade: React.FC< Props > = ( {
 	const siteSlugState = useSelector( ( state ) => getSelectedSiteSlug( state ) );
 	const siteSlug = siteSlugProp || siteSlugState || '';
 	const currencyCode = useSelector( getCurrentUserCurrencyCode );
+
 	const tieredProducts = useGetTieredProducts( duration );
+	const productsWithDifferentiators = useMemo( () => withDifferentiators( tieredProducts ), [
+		tieredProducts,
+	] );
 
 	const noop = () => {
 		// Do nothing
@@ -34,7 +39,7 @@ export const StorageTierUpgrade: React.FC< Props > = ( {
 
 	return (
 		<div className="storage-tier-upgrade">
-			{ tieredProducts.map( ( product: SelectorProduct, index: number ) => (
+			{ productsWithDifferentiators.map( ( product: SelectorProduct, index: number ) => (
 				<ProductCard
 					key={ index }
 					item={ product }
