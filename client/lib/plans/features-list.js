@@ -1,3 +1,4 @@
+import { isEnabled } from '@automattic/calypso-config';
 import {
 	FEATURE_13GB_STORAGE,
 	FEATURE_200GB_STORAGE,
@@ -1127,6 +1128,7 @@ export const FEATURES_LIST = {
 					},
 				}
 			),
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 
 	[ FEATURE_CRM_LEADS_AND_FUNNEL ]: {
@@ -1340,11 +1342,12 @@ export const FEATURES_LIST = {
 					noHighlight: <span className="not-highlighted" />,
 				},
 			} ),
-		isHighlighted: () => true,
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_CLOUD_BASED_BACKUPS ]: {
 		getSlug: () => FEATURE_TIERED_CLOUD_BASED_BACKUPS,
 		getTitle: () => i18n.translate( 'Backups are cloud based' ),
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_20GB_BACKUP_STORAGE ]: {
 		getSlug: () => FEATURE_TIERED_20GB_BACKUP_STORAGE,
@@ -1357,6 +1360,7 @@ export const FEATURES_LIST = {
 	[ FEATURE_TIERED_UNLIMITED_BACKUP_STORAGE ]: {
 		getSlug: () => FEATURE_TIERED_UNLIMITED_BACKUP_STORAGE,
 		getTitle: () => i18n.translate( 'Unlimited backup storage' ),
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_ONE_CLICK_RESTORES_30_DAYS ]: {
 		getSlug: () => FEATURE_TIERED_ONE_CLICK_RESTORES_30_DAYS,
@@ -1373,17 +1377,17 @@ export const FEATURES_LIST = {
 	[ FEATURE_TIERED_PRODUCT_BACKUP ]: {
 		getSlug: () => FEATURE_TIERED_PRODUCT_BACKUP,
 		getTitle: () => i18n.translate( 'All Backup features' ),
-		isHighlighted: () => true,
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_PRODUCT_SCAN ]: {
 		getSlug: () => FEATURE_TIERED_PRODUCT_SCAN,
 		getTitle: () => i18n.translate( 'Scan (real-time & automated)' ),
-		isHighlighted: () => true,
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_PRODUCT_SECURITY ]: {
 		getSlug: () => FEATURE_TIERED_PRODUCT_SECURITY,
 		getTitle: () => i18n.translate( 'All Security features' ),
-		isHighlighted: () => true,
+		isHighlighted: () => isEnabled( 'jetpack/only-realtime-products' ),
 	},
 	[ FEATURE_TIERED_COMMENT_FORM_PROTECTION ]: {
 		getSlug: () => FEATURE_TIERED_COMMENT_FORM_PROTECTION,
