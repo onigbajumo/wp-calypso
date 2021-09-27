@@ -181,7 +181,7 @@
 		"phone": "^2.4.2",
 		"photon": "^4.0.0",
 		"portscanner": "^2.2.0",
-		"postcss": "^8.2.6",
+		"postcss": "^8.3.8",
 		"prismjs": "^1.17.1",
 		"prop-types": "^15.7.2",
 		"qrcode.react": "^1.0.1",
