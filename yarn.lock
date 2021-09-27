@@ -445,6 +445,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@automattic/happychat-app@workspace:apps/happychat":
+  version: 0.0.0-use.local
+  resolution: "@automattic/happychat-app@workspace:apps/happychat"
+  dependencies:
+    "@automattic/calypso-build": ^9.0.0
+    "@automattic/calypso-polyfills": ^1.0.0
+    "@automattic/webpack-extensive-lodash-replacement-plugin": ^0.0.2
+    autoprefixer: ^10.2.5
+    calypso: ^0.17.0
+    enzyme: ^3.11.0
+    html-webpack-plugin: ^5.0.0-beta.4
+    jest: ^27.0.6
+    postcss: ^8.2.6
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    react-query: ^3.9.8
+    react-redux: ^7.2.4
+    redux: ^4.1.1
+    redux-thunk: ^2.3.0
+    webpack: ^5.53.0
+    webpack-bundle-analyzer: ^4.4.2
+    webpack-dev-server: ^3.11.2
+    wpcom: ^6.0.0
+    wpcom-proxy-request: ^6.0.0
+  languageName: unknown
+  linkType: soft
+
 "@automattic/i18n-utils@^1.0.0, @automattic/i18n-utils@workspace:packages/i18n-utils":
   version: 0.0.0-use.local
   resolution: "@automattic/i18n-utils@workspace:packages/i18n-utils"
