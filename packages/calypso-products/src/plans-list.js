@@ -1447,7 +1447,7 @@ export const PLANS_LIST = {
 		...getPlanJetpackSecurityT1Details(),
 		...getAnnualTimeframe(),
 		getStoreSlug: () => PLAN_JETPACK_SECURITY_T1_YEARLY,
-		getPathSlug: () => 'security',
+		getPathSlug: () => 'security-20gb-yearly',
 		getProductId: () => 2016,
 	},
 
@@ -1455,7 +1455,7 @@ export const PLANS_LIST = {
 		...getPlanJetpackSecurityT1Details(),
 		...getMonthlyTimeframe(),
 		getStoreSlug: () => PLAN_JETPACK_SECURITY_T1_MONTHLY,
-		getPathSlug: () => 'security-monthly',
+		getPathSlug: () => 'security-20gb-monthly',
 		getProductId: () => 2017,
 	},
 
@@ -1463,7 +1463,7 @@ export const PLANS_LIST = {
 		...getPlanJetpackSecurityT2Details(),
 		...getAnnualTimeframe(),
 		getStoreSlug: () => PLAN_JETPACK_SECURITY_T2_YEARLY,
-		getPathSlug: () => 'security-pro',
+		getPathSlug: () => 'security-1tb-yearly',
 		getProductId: () => 2019,
 	},
 
@@ -1471,7 +1471,7 @@ export const PLANS_LIST = {
 		...getPlanJetpackSecurityT2Details(),
 		...getMonthlyTimeframe(),
 		getStoreSlug: () => PLAN_JETPACK_SECURITY_T2_MONTHLY,
-		getPathSlug: () => 'security-pro-monthly',
+		getPathSlug: () => 'security-1tb-monthly',
 		getProductId: () => 2020,
 	},
 
