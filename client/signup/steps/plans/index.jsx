@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { parse as parseQs } from 'qs';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import AsyncLoad from 'calypso/components/async-load';
 import QueryPlans from 'calypso/components/data/query-plans';
 import PulsingDot from 'calypso/components/pulsing-dot';
 import { getTld, isSubdomain } from 'calypso/lib/domains';
@@ -16,7 +17,6 @@ import { Experiment } from 'calypso/lib/explat';
 import { getSiteTypePropertyValue } from 'calypso/lib/signup/site-type';
 import PlansFeaturesMain from 'calypso/my-sites/plans-features-main';
 import StepWrapper from 'calypso/signup/step-wrapper';
-import TabbedPlans from 'calypso/signup/steps/plans/tabbed-plans';
 import { recordTracksEvent } from 'calypso/state/analytics/actions';
 import { isTreatmentPlansReorderTest } from 'calypso/state/marketing/selectors';
 import hasInitializedSites from 'calypso/state/selectors/has-initialized-sites';
@@ -128,7 +128,8 @@ export class PlansStep extends Component {
 		);
 
 		const treatmentPlanDisplay = (
-			<TabbedPlans
+			<AsyncLoad
+				require="calypso/signup/steps/plans/tabbed-plans"
 				flowName={ flowName }
 				onUpgradeClick={ this.onSelectPlan }
 				plans={ [
@@ -170,7 +171,7 @@ export class PlansStep extends Component {
 			<div>
 				<QueryPlans />
 				<Experiment
-					name="tabbed_plans_poc"
+					name="tabbed_layout_plans_signup"
 					defaultExperience={ defaultPlanDisplay }
 					treatmentExperience={ treatmentPlanDisplay }
 					loadingExperience={ loadingPlanDisplay }
@@ -218,17 +219,29 @@ export class PlansStep extends Component {
 		return subHeaderText || translate( 'Choose a plan. Upgrade as you grow.' );
 	}
 
+	getHeaderTextForExperiment() {
+		const defaultHeaderText = this.getHeaderText();
+		const experimentHeaderText = 'Choose the right plan for you';
+
+		return (
+			<Experiment
+				name="tabbed_layout_plans_signup"
+				defaultExperience={ defaultHeaderText }
+				treatmentExperience={ experimentHeaderText }
+				loadingExperience={ '\u00A0' } // &nbsp;
+			/>
+		);
+	}
 	getSubHeaderTextForExperiment() {
 		const defaultSubHeaderText = this.getSubHeaderText();
-
-		const tabbedPlanRefundPolicyText =
+		const experimentSubHeaderText =
 			'There’s a plan for everybody. Pick between our Professional or Starter plans.';
 
 		return (
 			<Experiment
-				name="tabbed_plans_poc"
+				name="tabbed_layout_plans_signup"
 				defaultExperience={ defaultSubHeaderText }
-				treatmentExperience={ tabbedPlanRefundPolicyText }
+				treatmentExperience={ experimentSubHeaderText }
 				loadingExperience={ '\u00A0' } // &nbsp;
 			/>
 		);
@@ -243,7 +256,7 @@ export class PlansStep extends Component {
 			hasInitializedSitesBackUrl,
 		} = this.props;
 
-		const headerText = this.getHeaderText();
+		const headerText = this.getHeaderTextForExperiment();
 		const fallbackHeaderText = this.props.fallbackHeaderText || headerText;
 		const subHeaderText = this.getSubHeaderTextForExperiment();
 		const fallbackSubHeaderText = this.props.fallbackSubHeaderText || subHeaderText;
