@@ -164,7 +164,7 @@ class DesignPickerStep extends Component {
 		} = this.props;
 
 		const { selectedDesign } = this.state;
-		const previewUrl = getDesignUrl( selectedDesign, locale );
+		const previewUrl = getDesignUrl( selectedDesign, locale, { iframe: true } );
 
 		return (
 			<WebPreview
@@ -179,8 +179,6 @@ class DesignPickerStep extends Component {
 					components: { strong: <strong /> },
 				} ) }
 				toolbarComponent={ PreviewToolbar }
-				// Avoid page direct because checkForIframeLoadFailure inside the WebPreview returns true but I'm not sure why
-				disableRedirects
 			/>
 		);
 	}
