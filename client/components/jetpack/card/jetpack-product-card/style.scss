@@ -336,6 +336,14 @@
 	margin: 14px 0;
 	padding-inline-start: 8px;
 	color: var( --studio-gray-60 );
+
+	&.is-highlighted {
+		font-weight: 700;
+
+		.not-highlighted {
+			font-weight: initial;
+		}
+	}
 }
 
 /* Prices Loading state */
