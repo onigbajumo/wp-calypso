@@ -107,6 +107,17 @@ class DesignPickerStep extends Component {
 	}
 
 	pickDesign = ( selectedDesign ) => {
+		// Design picker preview will submit the defaultDependencies via next button,
+		// So only do this when the user picks the design directly
+		this.props.submitSignupStep(
+			{
+				stepName: this.props.stepName,
+			},
+			{
+				selectedDesign,
+			}
+		);
+
 		this.submitDesign( selectedDesign );
 	};
 
@@ -119,15 +130,6 @@ class DesignPickerStep extends Component {
 			theme: `pub/${ selectedDesign?.theme }`,
 			template: selectedDesign?.template,
 		} );
-
-		this.props.submitSignupStep(
-			{
-				stepName: this.props.stepName,
-			},
-			{
-				selectedDesign,
-			}
-		);
 
 		this.props.goToNextStep();
 	};
@@ -202,6 +204,7 @@ class DesignPickerStep extends Component {
 		if ( selectedDesign ) {
 			const isBlankCanvas = isBlankCanvasDesign( selectedDesign );
 			const designTitle = isBlankCanvas ? translate( 'Blank Canvas' ) : selectedDesign.title;
+			const defaultDependencies = { selectedDesign };
 
 			return (
 				<StepWrapper
@@ -218,6 +221,7 @@ class DesignPickerStep extends Component {
 					nextLabelText={ translate( 'Start with %(designTitle)s', {
 						args: { designTitle },
 					} ) }
+					defaultDependencies={ defaultDependencies }
 					goToNextStep={ this.submitDesign }
 				/>
 			);
