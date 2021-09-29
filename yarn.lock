@@ -116,7 +116,7 @@ __metadata:
     postcss: ^8.2.15
     react: ^17.0.2
     react-dom: ^17.0.2
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   bin:
     calypso-build: ./bin/calypso-build.js
     copy-assets: ./bin/copy-assets.js
@@ -241,7 +241,7 @@ __metadata:
     style-loader: ^1.2.1
     typescript: ^4.4.3
     utility-types: ^3.10.0
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   peerDependencies:
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -274,7 +274,7 @@ __metadata:
     sass-loader: ^10.1.1
     style-loader: ^1.2.1
     typescript: ^4.4.3
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   peerDependencies:
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -685,7 +685,7 @@ __metadata:
     react-redux: ^7.2.4
     redux: ^4.1.1
     redux-thunk: ^2.3.0
-    webpack: ^5.54.0
+    webpack: ^5.55.1
     webpack-dev-server: ^3.11.2
     wpcom: ^6.0.0
     wpcom-proxy-request: ^6.0.0
@@ -722,7 +722,7 @@ __metadata:
     react-native: ^0.65.0
     reakit-utils: ^0.15.1
     redux: ^4.0.5
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -880,7 +880,7 @@ __metadata:
     style-loader: ^1.2.1
     tslib: ^2.3.0
     typescript: ^4.4.3
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   peerDependencies:
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -996,7 +996,7 @@ __metadata:
   dependencies:
     rimraf: ^3.0.0
   peerDependencies:
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -1006,7 +1006,7 @@ __metadata:
   dependencies:
     semver: ^7.0.0
   peerDependencies:
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -1015,9 +1015,9 @@ __metadata:
   resolution: "@automattic/webpack-inline-constant-exports-plugin@workspace:packages/webpack-inline-constant-exports-plugin"
   dependencies:
     rimraf: ^3.0.0
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   peerDependencies:
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -1030,9 +1030,9 @@ __metadata:
     css-loader: ^5.2.4
     mini-css-extract-plugin: ^1.6.0
     rtlcss: ^3.1.2
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   peerDependencies:
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -1116,7 +1116,7 @@ __metadata:
     reakit-utils: ^0.15.1
     redux: ^4.0.5
     tinymce: ^4.9.6
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -1217,7 +1217,7 @@ __metadata:
     redux: ^4.1.1
     utility-types: ^3.10.0
     wait-for-expect: ^3.0.2
-    webpack: ^5.54.0
+    webpack: ^5.55.1
   languageName: unknown
   linkType: soft
 
@@ -12118,7 +12118,7 @@ __metadata:
     utility-types: ^3.10.0
     uuid: ^8.3.2
     valid-url: ^1.0.9
-    webpack: ^5.54.0
+    webpack: ^5.55.1
     webpack-bundle-analyzer: ^4.4.2
     webpack-dev-middleware: ^5.1.0
     webpack-hot-middleware: ^2.25.0
@@ -38482,9 +38482,9 @@ typescript@^4.4.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.47.1, webpack@npm:^5.54.0, webpack@npm:^5.9.0":
-  version: 5.54.0
-  resolution: "webpack@npm:5.54.0"
+"webpack@npm:^5.47.1, webpack@npm:^5.55.1, webpack@npm:^5.9.0":
+  version: 5.55.1
+  resolution: "webpack@npm:5.55.1"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.50
@@ -38515,7 +38515,7 @@ typescript@^4.4.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: d13c3b974b13955fe0c700ae0ca667a098ebd9fd5319621fdb50ef119e68a94f18c327bf709fb86b90549b706167889a80d0d8242cf47e71ef1bc122df4c3b69
+  checksum: dfbfa2f8386d9093645b1dad0618d909c91b13d4380fb8be021cadc09965bd16927965989ef15541269d0f339bcad6188d50a4a10fec5b0a4a7683317d9165e2
   languageName: node
   linkType: hard
 
@@ -38978,7 +38978,7 @@ typescript@^4.4.3:
     terser-webpack-plugin: ^5.2.4
     tslib: ^2.3.0
     typescript: ^4.4.3
-    webpack: ^5.54.0
+    webpack: ^5.55.1
     webpack-bundle-analyzer: ^4.4.2
     webpack-cli: ^4.8.0
     webpack-dev-middleware: ^5.1.0
@@ -39113,7 +39113,7 @@ typescript@^4.4.3:
     debug: ^4.1.1
     npm-run-all: ^4.1.5
     qs: ^6.5.2
-    webpack: ^5.54.0
+    webpack: ^5.55.1
     webpack-cli: ^4.8.0
     wpcom-oauth-cors: ^1.0.2-beta
     wpcom-proxy-request: ^6.0.0
